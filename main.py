@@ -1,4 +1,5 @@
 import pygame
+import os, sys
 import random
 import math
 
@@ -11,39 +12,47 @@ y_steel_walls = 3
 number_of_walls = 12
 screen = pygame.display.set_mode((32 + (64*x_steel_walls), 32 + (64*y_steel_walls)))
 
+
+Figures_folder = os.path.abspath(os.path.dirname(sys.argv[0])) + '/Figures/'
+
+print('Here', sys.argv[0])
+print('New here', os.path.abspath(sys.argv[0]))
+print('New here', os.path.abspath(os.path.dirname(sys.argv[0])))
+print('Test ', Figures_folder)
+
 # Title and Icon
 pygame.display.set_caption('Look at all those chickens!')
 speed_delay = 90
 
 # Steel Wall
-steel_wall_IMG = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/wall.png')
+steel_wall_IMG = pygame.image.load(Figures_folder + 'wall.png')
 
 # Wall
-wall_IMG = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/white_wall.png')
+wall_IMG = pygame.image.load(Figures_folder + 'white_wall.png')
 
 # Thief
 isInverted = 0
-thief_IMG_inv = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/thief_inv.png')
-thief_IMG = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/thief.png')
+thief_IMG_inv = pygame.image.load(Figures_folder + 'thief_inv.png')
+thief_IMG = pygame.image.load(Figures_folder + 'thief.png')
 thiefX = 0
 thiefY = 0
 thiefX_change = 0
 thiefY_change = 0
 
 # Bomb
-bomb_IMG = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/dynamite.png')
+bomb_IMG = pygame.image.load(Figures_folder + 'dynamite.png')
 bombX = 0
 bombY = 0
 bomb_state = 'ready'
 
 # Central Fire
-central_fire_IMG = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/shockwave.png')
+central_fire_IMG = pygame.image.load(Figures_folder + 'shockwave.png')
 explosion_state = 'off'
 explosionX = 0
 explosionY = 0
 
 # Fire
-fire_IMG = pygame.image.load('/Users/cmvergel/PycharmProjects/Bomberman/fire.png')
+fire_IMG = pygame.image.load(Figures_folder + 'fire.png')
 
 # Game Over text
 font = pygame.font.Font('freesansbold.ttf', 32)

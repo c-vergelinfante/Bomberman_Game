@@ -12,13 +12,8 @@ y_steel_walls = 3
 number_of_walls = 12
 screen = pygame.display.set_mode((32 + (64*x_steel_walls), 32 + (64*y_steel_walls)))
 
-
+# Setting the folder with the Figures
 Figures_folder = os.path.abspath(os.path.dirname(sys.argv[0])) + '/Figures/'
-
-print('Here', sys.argv[0])
-print('New here', os.path.abspath(sys.argv[0]))
-print('New here', os.path.abspath(os.path.dirname(sys.argv[0])))
-print('Test ', Figures_folder)
 
 # Title and Icon
 pygame.display.set_caption('Look at all those chickens!')

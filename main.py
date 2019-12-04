@@ -12,6 +12,9 @@ y_steel_walls = 3
 number_of_walls = 12
 screen = pygame.display.set_mode((32 + (64*x_steel_walls), 32 + (64*y_steel_walls)))
 
+x_places = (x_steel_walls * 2) + 1
+y_places = (y_steel_walls * 2) + 1
+
 # Setting the folder with the Figures
 Figures_folder = os.path.abspath(os.path.dirname(sys.argv[0])) + '/Figures/'
 
@@ -82,14 +85,8 @@ def setup_grid():
 
 
 def setup_walls():
-    wall(64, 0)
-    wall(0, 64)
-    if number_of_walls > 2:
-        for i in range(number_of_walls - 2):
-            # Number of spaces is always x_steel_walls + 1
-            # random.randint(min, max)
-            x_steel_walls
-
+    for x in walls:
+        wall(fromNumber_toLocation(x)[0], fromNumber_toLocation(x)[1])
 
 def isCollision(thiefX, thiefY):
 
@@ -132,6 +129,48 @@ def explosion():
     explosion_state = 'on'
 
 
+def fromNumber_toLocation(position):
+    x_position = - 32
+    y_position = - 32
+
+    if 0 <= position < x_places*y_places:
+        x_position = position - (x_places*(position//x_places))
+        y_position = position//x_places
+
+    return x_position*32, y_position*32
+
+
+def fromLocation_toNumber(x_position, y_position):
+    return ((y_position/32)+x_places) + (x_position/32)
+
+
+def isSteelWall(position):
+    n_vertical = position//x_places
+
+    if n_vertical % 2 == 0:
+        return False
+    else:
+        if (position - (x_places*(position//x_places))) % 2 == 0:
+            return False
+        else:
+            return True
+
+
+walls = []
+
+
+def setting_all_walls():
+    not_allowed = [0, 1, 2, x_places, 2*x_places]
+    walls.append(2)
+    walls.append(2*x_places)
+
+    while len(walls) < number_of_walls:
+        a = random.randint(3, x_places*y_places)
+        if (a not in not_allowed) and (a not in walls) and isSteelWall(a) is False:
+            walls.append(a)
+
+
+
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
     screen.blit(over_text, (32*x_steel_walls, 32*y_steel_walls))
@@ -143,6 +182,8 @@ time_counter = 0
 explosion_counter = 0
 running = True
 Game_Over = 'False'
+
+setting_all_walls()
 
 
 while running:
@@ -157,7 +198,7 @@ while running:
                 if event.key == pygame.K_LEFT:
                     thiefX_change = -32
                     isInverted = 0
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_RIGHT: #and (fromLocation_toNumber(thiefX+32, thiefY) not in walls):
                     thiefX_change = 32
                     isInverted = 1
                 if event.key == pygame.K_UP:

@@ -1,4 +1,4 @@
-# Bomberman_Game
+# Bomberman Game
 
 Personal re-creation of the classic game [Bomberman](https://en.wikipedia.org/wiki/Bomberman). In this game, the single player campaings through a field of enemies and obstacles until it reaches an exit hidden in one of the obstacles. Obstacles an enemies are killed by placing down bombs that explotes in different directions, but that can killed the character as well.
 

@@ -102,29 +102,70 @@ def isCollision(thiefX, thiefY):
             return True
 
 
+to_remove = []
+fire_cells = []
+
+
 def explosion():
 
     global explosion_state
     screen.blit(central_fire_IMG, (explosionX, explosionY))
 
-    decX = explosionX//32
-    decY = explosionY//32
+    loc_explosion = fromLocation_toNumber(explosionX, explosionY)
+    if loc_explosion not in fire_cells:
+        fire_cells.append(loc_explosion)
 
-    if decY % 2 == 0:
+    if isSteelWall(loc_explosion + 1) is False:
         screen.blit(fire_IMG, (explosionX + 32, explosionY))
-        screen.blit(fire_IMG, (explosionX + 64, explosionY))
+        if loc_explosion + 1 not in fire_cells:
+            fire_cells.append(loc_explosion + 1)
+        if (loc_explosion + 1) not in walls:
+            screen.blit(fire_IMG, (explosionX + 64, explosionY))
+            if loc_explosion + 2 not in fire_cells:
+                fire_cells.append(loc_explosion + 2)
+            if (loc_explosion + 2) in walls and loc_explosion + 2 not in to_remove:
+                to_remove.append(loc_explosion + 2)
+        elif loc_explosion + 1 not in to_remove:
+            to_remove.append(loc_explosion + 1)
+
+    if isSteelWall(loc_explosion - 1) is False:
         screen.blit(fire_IMG, (explosionX - 32, explosionY))
-        screen.blit(fire_IMG, (explosionX - 64, explosionY))
-        if decX % 2 == 0:
-            screen.blit(fire_IMG, (explosionX, explosionY + 32))
-            screen.blit(fire_IMG, (explosionX, explosionY + 64))
-            screen.blit(fire_IMG, (explosionX, explosionY - 32))
-            screen.blit(fire_IMG, (explosionX, explosionY - 64))
-    else:
+        if loc_explosion -1 not in fire_cells:
+            fire_cells.append(loc_explosion - 1)
+        if (loc_explosion - 1) not in walls:
+            screen.blit(fire_IMG, (explosionX - 64, explosionY))
+            if loc_explosion - 2 not in fire_cells:
+                fire_cells.append(loc_explosion - 2)
+            if (loc_explosion - 2) in walls and loc_explosion - 2 not in to_remove:
+                to_remove.append(loc_explosion - 2)
+        elif loc_explosion - 1 not in to_remove:
+            to_remove.append(loc_explosion - 1)
+
+    if isSteelWall(loc_explosion + x_places) is False:
         screen.blit(fire_IMG, (explosionX, explosionY + 32))
-        screen.blit(fire_IMG, (explosionX, explosionY + 64))
+        if loc_explosion + x_places not in fire_cells:
+            fire_cells.append(loc_explosion + x_places)
+        if (loc_explosion + x_places) not in walls:
+            screen.blit(fire_IMG, (explosionX, explosionY + 64))
+            if loc_explosion + (2*x_places) not in fire_cells:
+                fire_cells.append(loc_explosion + (2*x_places))
+            if (loc_explosion + (2*x_places)) in walls and loc_explosion + (2*x_places) not in to_remove:
+                to_remove.append(loc_explosion + (2*x_places))
+        elif loc_explosion + x_places not in to_remove:
+            to_remove.append(loc_explosion + x_places)
+
+    if isSteelWall(loc_explosion - x_places) is False:
         screen.blit(fire_IMG, (explosionX, explosionY - 32))
-        screen.blit(fire_IMG, (explosionX, explosionY - 64))
+        if loc_explosion - x_places not in fire_cells:
+            fire_cells.append(loc_explosion - x_places)
+        if (loc_explosion - x_places) not in walls:
+            screen.blit(fire_IMG, (explosionX, explosionY - 64))
+            if loc_explosion - (2*x_places) not in fire_cells:
+                fire_cells.append(loc_explosion - (2*x_places))
+            if (loc_explosion - (2*x_places)) in walls and loc_explosion - (2*x_places) not in to_remove:
+                to_remove.append(loc_explosion - (2*x_places))
+        elif loc_explosion - x_places not in to_remove:
+            to_remove.append(loc_explosion - x_places)
 
     explosion_state = 'on'
 
@@ -185,7 +226,6 @@ Game_Over = 'False'
 
 setting_all_walls()
 
-
 while running:
     # RGB - Red, Green, Blue
     screen.fill((0, 153, 76))
@@ -216,11 +256,10 @@ while running:
                     thiefX_change = 0
                     thiefY_change = 0
 
-
         thiefX += thiefX_change
         thiefY += thiefY_change
 
-
+    setup_walls()
     collision = False
     collision = isCollision(thiefX, thiefY)
     if collision:
@@ -250,21 +289,21 @@ while running:
 
     if explosion_state is 'on':
         explosion()
+
         explosion_counter += speed_delay
-        if thiefX == explosionX:
-            if thiefY == explosionY + 32 or thiefY == explosionY + 64 or thiefY == explosionY - 32 or thiefY == explosionY - 64 or thiefY == explosionY:
-                game_over_text()
-                Game_Over = 'True'
-        if thiefY == explosionY:
-            if thiefX == explosionX + 32 or thiefX == explosionX + 64 or thiefX == explosionX - 32 or thiefX == explosionX - 64:
-                game_over_text()
-                Game_Over = 'True'
+
+        if fromLocation_toNumber(thiefX, thiefY) in fire_cells:
+            game_over_text()
+            Game_Over = 'True'
 
         if explosion_counter > 1000:
             explosion_counter = 0
             explosion_state = 'off'
+            for x in to_remove:
+                if x in walls: walls.remove(x)
+            for y in fire_cells:
+                fire_cells.remove(y)
 
     setup_grid()
-    setup_walls()
     thief(thiefX, thiefY, isInverted)
     pygame.display.update()

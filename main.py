@@ -141,7 +141,7 @@ def fromNumber_toLocation(position):
 
 
 def fromLocation_toNumber(x_position, y_position):
-    return ((y_position/32)+x_places) + (x_position/32)
+    return ((y_position/32)*x_places) + (x_position/32)
 
 
 def isSteelWall(position):
@@ -195,15 +195,15 @@ while running:
             running = False
         if Game_Over is not 'True':
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT and (fromLocation_toNumber(thiefX - 32, thiefY) not in walls):
                     thiefX_change = -32
                     isInverted = 0
-                if event.key == pygame.K_RIGHT: #and (fromLocation_toNumber(thiefX+32, thiefY) not in walls):
+                if event.key == pygame.K_RIGHT and (fromLocation_toNumber(thiefX + 32, thiefY) not in walls):
                     thiefX_change = 32
                     isInverted = 1
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP and (fromLocation_toNumber(thiefX, thiefY - 32) not in walls):
                     thiefY_change = -32
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN and (fromLocation_toNumber(thiefX, thiefY + 32) not in walls):
                     thiefY_change = 32
                 if event.key == pygame.K_SPACE:
                     if bomb_state is 'ready':
@@ -216,8 +216,10 @@ while running:
                     thiefX_change = 0
                     thiefY_change = 0
 
-    thiefX += thiefX_change
-    thiefY += thiefY_change
+
+        thiefX += thiefX_change
+        thiefY += thiefY_change
+
 
     collision = False
     collision = isCollision(thiefX, thiefY)
